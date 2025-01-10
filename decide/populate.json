@@ -27,7 +27,7 @@
             "username": "usuario1",
             "first_name": "",
             "last_name": "",
-            "email": "usuario1@us.es",
+            "email": "usuario1_example@us.es",
             "is_staff": false,
             "is_active": true,
             "date_joined": "2022-12-05T16:51:28.355Z",

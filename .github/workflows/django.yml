@@ -8,9 +8,13 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        postgres-version: [14.9, 15]
+
     services:
       postgres:
-        image: postgres:14.9
+        image: postgres:${{ matrix.postgres-version }}
         env:
           POSTGRES_USER: decide
           POSTGRES_PASSWORD: decide
@@ -22,10 +26,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10.12
+    - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10.12
+        python-version: 3.11
     - name: psycopg2 prerequisites
       run: sudo apt-get install libpq-dev
     - name: Install dependencies and config
@@ -42,7 +46,13 @@ jobs:
       run: |
         cd decide
         coverage run --branch --source=. ./manage.py test  --keepdb 
-        coverage xml 
+        coverage xml
+
+  cobertura:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
     - name: Codacy Coverage Reporter
       uses: codacy/codacy-coverage-reporter-action@v1
       with:

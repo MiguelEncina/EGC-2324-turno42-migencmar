@@ -26,7 +26,7 @@ class Auth(models.Model):
     me = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.url
+        return self.name
 
 
 class Key(models.Model):

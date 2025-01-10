@@ -70,7 +70,7 @@ def mock_query(client):
     '''
     Function to build a mock to override the query function in this module.
 
-    The client param should be a rest_framework.tests.APIClient
+    The client param should be rest_framework.tests.APIClient
     '''
 
     def test_query(modname, entry_point='/', method='get', baseurl=None, **kwargs):
