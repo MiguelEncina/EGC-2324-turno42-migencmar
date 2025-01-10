@@ -22,13 +22,3 @@ jobs:
         release_name: Release ${{ github.ref_name }}  # Usa el nombre de la etiqueta como título
         draft: false  # Publica la release directamente
         prerelease: false  # Cambia a true si la release es pre-lanzamiento
-
-    - name: Upload release assets
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./path/to/your/asset.zip  # Cambia esto por la ruta a tu archivo
-        asset_name: asset.zip  # Cambia el nombre del archivo como quieras
-        asset_content_type: application/zip
