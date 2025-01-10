@@ -1,42 +1,34 @@
-name: Semantic Versioning and Release
+name: Automatic Release
+
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    tags:
+      - 'v*'  # Se activa cuando se realiza un push de una etiqueta que comienza con "v"
 
 jobs:
-  versioning:
+  release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-          
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.8.1'
-          
-      - name: Create temporary package.json
-        run: |
-          echo '{
-            "private": true,
-            "devDependencies": {}
-          }' > package.json
-          
-      - name: Install semantic-release and plugins
-        run: |
-          npm install --save-dev semantic-release @semantic-release/git @semantic-release/changelog
-          
-      - name: Run Semantic Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
 
-      - name: Clean up temporary files
-        if: always()
-        run: rm package.json package-lock.json
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref_name }}  # Usa el nombre de la etiqueta como el tag de la release
+        release_name: Release ${{ github.ref_name }}  # Usa el nombre de la etiqueta como título
+        draft: false  # Publica la release directamente
+        prerelease: false  # Cambia a true si la release es pre-lanzamiento
+
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./path/to/your/asset.zip  # Cambia esto por la ruta a tu archivo
+        asset_name: asset.zip  # Cambia el nombre del archivo como quieras
+        asset_content_type: application/zip
